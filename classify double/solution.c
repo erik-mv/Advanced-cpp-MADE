@@ -15,7 +15,10 @@ uint64_t convertToUint64 (double number) {
 }
 
 bool getBit (const uint64_t number, const uint8_t index) {
-    /// Your code here...
+    uint64_t mask = (uint64_t)1 << index;
+	uint64_t temp = mask & number;
+	temp >>= index;
+	return temp;
 }
 
 
@@ -24,7 +27,7 @@ bool getBit (const uint64_t number, const uint8_t index) {
  */
 
 bool checkForPlusZero (uint64_t number) {
-    /// Your code here.
+    return number == 0x0000000000000000;
 }
 
 bool checkForMinusZero (uint64_t number) {
@@ -32,35 +35,57 @@ bool checkForMinusZero (uint64_t number) {
 }
 
 bool checkForPlusInf (uint64_t number) {
-    /// Your code here.
+    return number == 0x7FF0000000000000;
 }
 
 bool checkForMinusInf (uint64_t number) {
-    /// Your code here.
+    return number == 0xFFF0000000000000;
 }
 
 bool checkForPlusNormal (uint64_t number) {
-    /// Your code here.
+    uint64_t PlusZero = 0x0000000000000000;
+    uint64_t PlusInf = 0x7FF0000000000000;
+    
+    return (get_bit(number, 63) == 0) 
+        && ((number & PlusInf) != PlusZero) 
+        && ((number & PlusInf) != PlusInf);
 }
 
 bool checkForMinusNormal (uint64_t number) {
-    /// Your code here.
+    uint64_t MinusZero = 0x8000000000000000;
+    uint64_t MinusInf = 0xFFF0000000000000;
+    
+    return (get_bit(number, 63) == 1)
+        && ((number & MinusInf) != MinusZero)
+        && ((number & MinusInf) != MinusInf);
 }
 
 bool checkForPlusDenormal (uint64_t number) {
-    /// Your code here.
+    uint64_t PlusZero = 0x0000000000000000;
+    uint64_t MinusInf = 0xFFF0000000000000;
+
+    return (number != PlusZero) && ((number & MinusInf) == PlusZero);
 }
 
 bool checkForMinusDenormal (uint64_t number) {
-    /// Your code here.
+    uint64_t MinusZero = 0x8000000000000000;
+    uint64_t MinusInf = 0xFFF0000000000000;
+
+    return (number != MinusZero) && ((number & MinusInf) == MinusZero);
 }
 
 bool checkForSignalingNan (uint64_t number) {
-    /// Your code here.
+    uint64_t PlusInf = 0x7FF0000000000000;
+    uint64_t PlusQNun1 = 0x7FF8000000000000;
+    uint64_t PlusQNun2 = 0x7FFFFFFFFFFFFFFF;
+
+    return ((number & PlusQNun1) == PlusInf) && ((number & PlusQNun2) != PlusInf);
 }
 
 bool checkForQuietNan (uint64_t number) {
-    /// Your code here.
+    uint64_t PlusQNun = 0x7FF8000000000000;
+
+    return (number & PlusQNun) == PlusQNun;
 }
 
 
