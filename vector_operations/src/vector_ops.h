@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 
+
 namespace task {
     using std::vector;
     using std::cin;
