@@ -4,176 +4,164 @@
 
 
 namespace task {
-    using std::vector;
-    using std::cin;
-    using std::cout;
-    using std::ostream;
-    using std::istream;
-    using std::swap;
+using std::cin;
+using std::cout;
+using std::istream;
+using std::ostream;
+using std::swap;
+using std::vector;
 
-    vector<double> operator+ (const vector<double>& a, const vector<double>& b) {
-        vector<double> c;
+vector<double> operator+(const vector<double>& a, const vector<double>& b) {
+  vector<double> c(a.size());
 
-        for (size_t i = 0; i < a.size(); ++i)
-            c.push_back(a[i] + b[i]);
+  for (size_t i = 0; i < a.size(); ++i) c[i] = a[i] + b[i];
 
-        return c;
-    }
+  return c;
+}
 
-    vector<double> operator+ (const vector<double>& a) {
-        vector<double> c;
+vector<double> operator+(const vector<double>& a) {
+  vector<double> c(a.size());
 
-        for (size_t i = 0; i < a.size(); ++i)
-            c.push_back(+a[i]);
+  for (size_t i = 0; i < a.size(); ++i) c[i] += a[i];
 
-        return c;
-    }
+  return c;
+}
 
-    vector<double> operator- (const vector<double>& a, const vector<double>& b) {
-        vector<double> c;
+vector<double> operator-(const vector<double>& a, const vector<double>& b) {
+  vector<double> c(a.size());
 
-        for (size_t i = 0; i < a.size(); ++i)
-            c.push_back(a[i] - b[i]);
+  for (size_t i = 0; i < a.size(); ++i) c[i] = a[i] - b[i];
 
-        return c;
-    }
+  return c;
+}
 
-    vector<double> operator- (const vector<double>& a) {
-        vector<double> c;
+vector<double> operator-(const vector<double>& a) {
+  vector<double> c(a.size());
 
-        for (size_t i = 0; i < a.size(); ++i)
-            c.push_back(-a[i]);
+  for (size_t i = 0; i < a.size(); ++i) c[i] -= a[i];
 
-        return c;
-    }
+  return c;
+}
 
-    double operator* (const vector<double>& a, const vector<double>& b) {
-        double sum = 0;
+double operator*(const vector<double>& a, const vector<double>& b) {
+  double sum = 0;
 
-        for (size_t i = 0; i < a.size(); ++i)
-            sum += a[i] * b[i];
+  for (size_t i = 0; i < a.size(); ++i) sum += a[i] * b[i];
 
-        return sum;
-    }
+  return sum;
+}
 
-    vector<double> operator% (const vector<double>& a, const vector<double>& b) {
-        vector<double> c;
+vector<double> operator%(const vector<double>& a, const vector<double>& b) {
+  vector<double> c(a.size());
 
-        c.push_back(a[1] * b[2] - a[2] * b[1]);
-        c.push_back(a[2] * b[0] - a[0] * b[2]);
-        c.push_back(a[0] * b[1] - a[1] * b[0]);
+  c[0] = a[1] * b[2] - a[2] * b[1];
+  c[1] = a[2] * b[0] - a[0] * b[2];
+  c[2] = a[0] * b[1] - a[1] * b[0];
 
-        return c;
-    }
+  return c;
+}
 
-    bool operator|| (const vector<double>& a, const vector<double>& b) {
-        const double eps = 1e-12;
-        double flag = a[0] / b[0];
+bool operator||(const vector<double>& a, const vector<double>& b) {
+  const double eps = 1e-12;
 
-        for (size_t i = 1; i < a.size(); ++i) {
-            double temp = flag - a[i] / b[i];
+  double cosFi = (a * a) * (b * b);
 
-            if (temp > eps || -temp > eps)
-                return 0;
-        }
+  if (cosFi < eps) return 1;
 
-        return 1;
-    }
+  cosFi = (a * b) * (a * b) / cosFi;
 
-    bool operator&& (const vector<double>& a, const vector<double>& b) {
-        const double eps = 1e-12;
-        double flag = a[0] / b[0];
+  if (fabs(cosFi - 1.) < eps) return 1;
 
-        if (flag < 0 && b[0])
-            return 0;
+  return 0;
+}
 
-        for (size_t i = 1; i < a.size(); ++i) {
-            double temp = flag - a[i] / b[i];
+bool operator&&(const vector<double>& a, const vector<double>& b) {
+  const double eps = 1e-12;
 
-            if (temp > eps || -temp > eps)
-                return 0;
-        }
+  double cosFi = sqrt(a * a) * sqrt(b * b);
 
-        return 1;
-    }
+  if (cosFi < eps) return 1;
 
+  cosFi = (a * b) / cosFi;
 
-    vector<double> reverse(vector<double>& a) {
-        int n = a.size();
+  if (fabs(cosFi - 1.) < eps) return 1;
 
-        for (size_t i = 0; i < n / 2; ++i)
-            swap(a[i], a[n - 1 - i]);
+  return 0;
+}
 
-        return a;
-    }
+void reverse(vector<double>& a) {
+  int n = a.size();
 
-    istream& operator>> (istream& strm, vector<double>& b) {
-        b.clear();
-        size_t n;
-        strm >> n;
+  for (size_t i = 0; i < n / 2; ++i) swap(a[i], a[n - 1 - i]);
+}
 
-        for (size_t i = 0; i < n; ++i) {
-            double x;
-            strm >> x;
+istream& operator>>(istream& strm, vector<double>& b) {
+  size_t n;
+  strm >> n;
 
-            b.push_back(x);
-        }
+  b.clear();
+  b.resize(n);
 
-        return strm;
-    }
+  for (size_t i = 0; i < n; ++i) strm >> b[i];
 
-    ostream& operator<<(ostream& strm, const vector<double>& a) {
-        strm << a[0];
+  return strm;
+}
 
-        for (size_t i = 1; i < a.size(); ++i)
-            strm << " " << a[i];
+ostream& operator<<(ostream& strm, const vector<double>& a) {
+  if (a.size() == 0) {
+    strm << "size vector = 0\n";
+    return strm;
+  }
 
-        strm << "\n";
+  strm << a[0];
 
-        return strm;
-    }
+  for (size_t i = 1; i < a.size(); ++i) strm << " " << a[i];
 
-    istream& operator>> (istream& strm, vector<int>& b) {
-        b.clear();
-        size_t n;
-        strm >> n;
+  strm << "\n";
 
-        for (size_t i = 0; i < n; ++i) {
-            int x;
-            strm >> x;
+  return strm;
+}
 
-            b.push_back(x);
-        }
+istream& operator>>(istream& strm, vector<int>& b) {
+  size_t n;
+  strm >> n;
 
-        return strm;
-    }
+  b.clear();
+  b.resize(n);
 
-    ostream& operator<<(ostream& strm, const vector<int>& a) {
-        strm << a[0];
+  for (size_t i = 0; i < n; ++i) strm >> b[i];
 
-        for (size_t i = 1; i < a.size(); ++i)
-            strm << " " << a[i];
+  return strm;
+}
 
-        strm << "\n";
+ostream& operator<<(ostream& strm, const vector<int>& a) {
+  if (a.size() == 0) {
+    strm << "size vector = 0\n";
+    return strm;
+  }
 
-        return strm;
-    }
+  strm << a[0];
 
-    vector<int> operator| (const vector<int>& a, const vector<int>& b) {
-        vector<int> c;
+  for (size_t i = 1; i < a.size(); ++i) strm << " " << a[i];
 
-        for (size_t i = 0; i < a.size(); ++i)
-            c.push_back(a[i] | b[i]);
+  strm << "\n";
 
-        return c;
-    }
+  return strm;
+}
 
-    vector<int> operator& (const vector<int>& a, const vector<int>& b) {
-        vector<int> c;
+vector<int> operator|(const vector<int>& a, const vector<int>& b) {
+  vector<int> c(a.size());
 
-        for (size_t i = 0; i < a.size(); ++i)
-            c.push_back(a[i] & b[i]);
+  for (size_t i = 0; i < a.size(); ++i) c[i] = a[i] | b[i];
 
-        return c;
-    }
+  return c;
+}
+
+vector<int> operator&(const vector<int>& a, const vector<int>& b) {
+  vector<int> c(a.size());
+
+  for (size_t i = 0; i < a.size(); ++i) c[i] = a[i] & b[i];
+
+  return c;
+}
 }  // namespace task
